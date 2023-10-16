@@ -21,6 +21,7 @@
     "push": "./scripts/push-to-docker.sh"
   },
   "dependencies": {
+    "@nestjs-query/core": "^0.30.0",
     "@nestjs-query/query-typeorm": "^0.30.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
@@ -35,6 +36,7 @@
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.7.2",
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
