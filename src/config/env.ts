@@ -13,7 +13,7 @@ export const ENV = cleanEnv(process.env, {
   // db
   DB_HOST: str(),
   DB_PORT: num({ default: 5432 }),
-  DB_NAME: str({ devDefault: 'cloud-logger' }),
+  DB_NAME: str({ devDefault: 'cloudlogger' }),
   DB_USERNAME: str(),
   DB_PASSWORD: str(),
   DB_SECURE: bool({ default: true }),

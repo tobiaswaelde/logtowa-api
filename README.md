@@ -21,7 +21,7 @@ This is the backend of the CloudLogger. It receives the log messages and provide
 | LOG_LEVEL    | Level for console logs                                                   | no       | warn          |
 | DB_HOST      | Host of the database                                                     | yes      |               |
 | DB_PORT      | Port of the database                                                     | yes      | 5432          |
-| DB_NAME      | Name of the database                                                     | yes      | cloud-logger  |
+| DB_NAME      | Name of the database                                                     | yes      | cloudlogger   |
 | DB_USERNAME  | User                                                                     | yes      |               |
 | DB_PASSWORD  | Password                                                                 | yes      |               |
 | DB_SECURE    | Flag if database connection is secure                                    | no       | true          |
