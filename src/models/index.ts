@@ -1,3 +1,7 @@
-export {};
+import { Log } from './log';
+import { Project } from './project';
+import { ProjectGroup } from './project-group';
 
-export const entities = [];
+export { ProjectGroup, Project, Log };
+
+export const entities = [ProjectGroup, Project, Log];
