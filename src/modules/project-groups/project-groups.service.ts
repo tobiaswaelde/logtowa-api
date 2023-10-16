@@ -45,8 +45,9 @@ export class ProjectGroupsService extends TypeOrmQueryService<ProjectGroup> {
     });
     if (data.parent) {
       const parentGroup = await this.repo.findOne({ where: { id: data.parent } });
-      if (!projectGroup)
-        throw new BadRequestException(`ProjectGroup with ID '${data.parent}' not found.`);
+      if (!projectGroup) {
+        throw new BadRequestException(`Project group with ID '${data.parent}' not found.`);
+      }
       projectGroup.parent = parentGroup;
     }
 
@@ -58,7 +59,10 @@ export class ProjectGroupsService extends TypeOrmQueryService<ProjectGroup> {
   async update(id: string, data: UpdateProjectGroupDto) {
     await this.checkExists(data.name, data.parent, id);
 
-    const projectGroup = await this.repo.findOne({ where: { id } });
+    const projectGroup = await this.repo.findOne({
+      where: { id },
+      relations: { parent: true, children: true, projects: true },
+    });
 
     if (data.name) projectGroup.name = data.name;
     if (data.parent) {
@@ -85,9 +89,9 @@ export class ProjectGroupsService extends TypeOrmQueryService<ProjectGroup> {
     // check if project group already exists
     const existingGroup = await this.repo.findOne({
       where: {
+        id: id ? Not(id) : undefined,
         name: name,
         parent: { id: parent },
-        id: id ? Not(id) : undefined,
       },
     });
     if (existingGroup !== null) {

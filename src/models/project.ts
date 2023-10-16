@@ -8,10 +8,10 @@ export class Project {
   id: string;
 
   @ManyToOne(() => ProjectGroup, (pg) => pg.projects, { onDelete: 'SET NULL' })
-  parentGroup: ProjectGroup;
+  group: ProjectGroup;
 
   @Column({ nullable: true, default: null })
-  displayName?: string;
+  name: string;
 
   @Column({ nullable: true, default: null })
   repoUrl?: string;

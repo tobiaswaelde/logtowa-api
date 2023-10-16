@@ -15,6 +15,6 @@ export class ProjectGroup {
   @OneToMany(() => ProjectGroup, (pg) => pg.parent, { onDelete: 'SET NULL' })
   children: ProjectGroup[];
 
-  @OneToMany(() => Project, (p) => p.parentGroup)
+  @OneToMany(() => Project, (p) => p.group)
   projects: Project[];
 }
