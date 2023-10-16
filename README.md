@@ -13,3 +13,20 @@
 > This project is still in development. It will be usable as soon as it reaches v1.x
 
 This is the backend of the CloudLogger. It receives the log messages and provides the API for the frontend.
+
+## Environment
+| Variable     | Description                                                              | Required | Default Value |
+| ------------ | ------------------------------------------------------------------------ | -------- | ------------- |
+| PORT         | The API port                                                             | no       | 3001          |
+| LOG_LEVEL    | Level for console logs                                                   | no       | warn          |
+| DB_HOST      | Host of the database                                                     | yes      |               |
+| DB_PORT      | Port of the database                                                     | yes      | 5432          |
+| DB_NAME      | Name of the database                                                     | yes      | cloud-logger  |
+| DB_USERNAME  | User                                                                     | yes      |               |
+| DB_PASSWORD  | Password                                                                 | yes      |               |
+| DB_SECURE    | Flag if database connection is secure                                    | no       | true          |
+| DB_SYNC      | Flag if database should be synced with the models                        | no       | false         |
+| SOCKET_TOKEN | Token to authenticate socket connections. Used by the winston transport. | yes      |               |
+| AUTH_TOKEN   | Token to authenticate API requests. Used by the frontend.                | yes      |               |
+
+<!-- |              |                                                                          |          |               | -->
