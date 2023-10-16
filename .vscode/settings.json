@@ -1,0 +1,6 @@
+{
+  "sonarlint.connectedMode.project": {
+    "connectionId": "SonarQube",
+    "projectKey": "tobiaswaelde_cloud-logger-backend_AYs1m5fJPhYnLbS8eM75"
+  }
+}
