@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { datasource } from './config/db';
 import { ENV } from './config/env';
+import { ValidationPipe } from '@nestjs/common';
+import { customQueryParser } from './middlewares/custom-query.middleware';
 
 async function bootstrap() {
   try {
@@ -13,8 +15,10 @@ async function bootstrap() {
   }
 
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('/api'), app.enableCors({ origin: '*' });
-  // app.useGlobalPipes()
+  app.setGlobalPrefix('/api');
+  app.enableCors({ origin: '*' });
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.use(customQueryParser);
 
   await app.listen(ENV.PORT);
 }
