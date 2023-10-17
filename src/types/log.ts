@@ -1,13 +1,15 @@
-import { IsNotEmpty, IsOptional, IsObject } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsObject, MaxLength } from 'class-validator';
 
 export class LogMessage {
   @IsNotEmpty()
   projectKey: string;
 
   @IsNotEmpty()
+  @MaxLength(255)
   level: string;
 
   @IsOptional()
+  @MaxLength(255)
   scope?: string;
 
   @IsNotEmpty()

@@ -32,6 +32,7 @@ export class CreateProjectDto {
   name: string;
 
   @IsOptional()
+  @MaxLength(2000)
   repoUrl?: string;
 }
 
@@ -45,5 +46,6 @@ export class UpdateProjectDto {
   name: string;
 
   @IsOptional()
+  @MaxLength(2000)
   repoUrl?: string;
 }

@@ -10,10 +10,10 @@ export class Project {
   @ManyToOne(() => ProjectGroup, (pg) => pg.projects, { onDelete: 'SET NULL' })
   group: ProjectGroup;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true, default: null, length: 255 })
   name: string;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true, default: null, length: 2000 })
   repoUrl?: string;
 
   @OneToMany(() => Log, (l) => l.project, { onDelete: 'CASCADE' })

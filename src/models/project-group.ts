@@ -7,6 +7,7 @@ export class ProjectGroup {
   id: string;
 
   @Column()
+  //TODO @Column({ length: 255 })
   name: string;
 
   @ManyToOne(() => ProjectGroup, (pg) => pg.children, { onDelete: 'SET NULL' })
