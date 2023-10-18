@@ -78,8 +78,18 @@ export class ProjectGroupsService extends TypeOrmQueryService<ProjectGroup> {
   }
 
   async delete(id: string) {
-    const projectGroup = await this.repo.findOneBy({ id });
+    const projectGroup = await this.repo.findOne({
+      where: { id },
+      relations: { parent: true, children: true, projects: true },
+    });
     if (!projectGroup) throw new NotFoundException();
+
+    if (projectGroup.children.length > 0) {
+      throw new BadRequestException('The group still has subgroups.');
+    }
+    if (projectGroup.projects.length > 0) {
+      throw new BadRequestException('The group still has projects.');
+    }
 
     await this.deleteOne(id);
     return ProjectGroupDto.fromProjectGroup(projectGroup);
