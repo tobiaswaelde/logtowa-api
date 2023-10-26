@@ -19,7 +19,12 @@ export class LogsService extends TypeOrmQueryService<Log> {
     super(repo);
   }
 
-  async getAll(pageOptions: PageOptionsDto, filter?: Filter<Log>, sort?: SortField<Log>[]) {
+  async getAll(
+    projectId: string,
+    pageOptions: PageOptionsDto,
+    filter?: Filter<Log>,
+    sort?: SortField<Log>[],
+  ) {
     const count = await this.count({});
 
     const items = await this.query({
@@ -27,7 +32,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
         limit: pageOptions.perPage,
         offset: pageOptions.skip,
       },
-      filter: filter,
+      filter: { ...filter, project: { id: { eq: projectId } } },
       sorting: sort,
     });
 
