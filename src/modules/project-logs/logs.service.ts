@@ -20,6 +20,8 @@ export class LogsService extends TypeOrmQueryService<Log> {
   }
 
   async getAll(pageOptions: PageOptionsDto, filter?: Filter<Log>, sort?: SortField<Log>[]) {
+    const count = await this.count({});
+
     const items = await this.query({
       paging: {
         limit: pageOptions.perPage,
@@ -30,7 +32,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
     });
 
     const logs = items.map(LogDto.fromLog).map(({ meta, ...rest }) => ({ ...rest }));
-    const pageMeta = new PageMetaDto({ itemCount: logs.length, pageOptions });
+    const pageMeta = new PageMetaDto({ itemCount: count, pageOptions });
 
     return new PaginatedDto(logs, pageMeta);
   }
