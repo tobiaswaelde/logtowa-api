@@ -34,16 +34,16 @@ export class LogsGateway {
 
   @SubscribeMessage('log')
   async receive(@MessageBody() data: LogMessage) {
-    const { projectKey, ...rest } = data;
+    const { appKey, ...rest } = data;
 
     // save log in database
-    const log = await this.logs.create(projectKey, {
+    const log = await this.logs.create(appKey, {
       timestamp: new Date(),
       ...rest,
     });
 
     // send log to socket
-    this.server.emit(projectKey, {
+    this.server.emit(appKey, {
       id: log.id,
       timestamp: log.timestamp,
       level: log.level,

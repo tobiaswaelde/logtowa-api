@@ -3,7 +3,7 @@ import { Log } from '../models';
 
 export class LogMessage {
   @IsNotEmpty()
-  projectKey: string;
+  appKey: string;
 
   @IsNotEmpty()
   @MaxLength(255)
