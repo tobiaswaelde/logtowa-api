@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { App, Group, Log } from '../../models';
 import { AppsController } from './apps.controller';
 import { AppsService } from './apps.service';
-import { LogsService } from '../project-logs/logs.service';
+import { LogsService } from '../app-logs/logs.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Group, App, Log])],

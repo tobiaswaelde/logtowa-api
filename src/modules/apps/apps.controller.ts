@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { AppsService } from './apps.service';
 import { CreateAppDto, UpdateAppDto } from '../../types/project';
-import { LogsService } from '../project-logs/logs.service';
+import { LogsService } from '../app-logs/logs.service';
 import { PageOptionsDto } from '../../types/pagination';
 import { Filter, SortField } from '@nestjs-query/core';
 import { Log } from '../../models';
