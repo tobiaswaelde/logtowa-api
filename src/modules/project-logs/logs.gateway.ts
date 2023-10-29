@@ -7,7 +7,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { LogMessage } from '../../types/log';
 import { Inject } from '@nestjs/common';
-import { ProjectsService } from '../projects/projects.service';
+import { AppsService } from '../apps/apps.service';
 import { ENV } from '../../config/env';
 import { LogsService } from './logs.service';
 
@@ -19,7 +19,7 @@ export class LogsGateway {
   server: Server;
 
   constructor(
-    @Inject(ProjectsService.token) private readonly projects: ProjectsService,
+    @Inject(AppsService.token) private readonly apps: AppsService,
     @Inject(LogsService.token) private readonly logs: LogsService,
   ) {}
 
@@ -56,8 +56,8 @@ export class LogsGateway {
   private getToken(client: Socket): string {
     return client.handshake.auth.token || client.handshake.headers.token;
   }
-  private getProjectKey(client: Socket): string {
-    return client.handshake.auth.projectkey || client.handshake.headers.projectkey;
+  private getAppKey(client: Socket): string {
+    return client.handshake.auth.appkey || client.handshake.headers.appkey;
   }
 
   private checkToken(client: Socket) {
@@ -69,12 +69,12 @@ export class LogsGateway {
     }
   }
   private async checkProjectKey(client: Socket) {
-    const projectKey = this.getProjectKey(client);
-    if (!projectKey) throw new Error('No project key provided.');
+    const appKey = this.getAppKey(client);
+    if (!appKey) throw new Error('No app key provided.');
 
-    const project = await this.projects.get(projectKey);
-    if (!project) {
-      throw new Error('Project not found.');
+    const app = await this.apps.get(appKey);
+    if (!app) {
+      throw new Error('App not found.');
     }
   }
 }

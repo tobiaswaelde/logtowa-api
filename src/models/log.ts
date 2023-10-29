@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Project } from './project';
+import { App } from './app';
 import { jsonTransformer } from '../util/db';
 
 @Entity('logs', { orderBy: {} })
@@ -10,8 +10,8 @@ export class Log {
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
   timestamp: Date;
 
-  @ManyToOne(() => Project, (p) => p.logs)
-  project: Project;
+  @ManyToOne(() => App, (p) => p.logs)
+  app: App;
 
   @Column()
   //TODO @Column({length:255})

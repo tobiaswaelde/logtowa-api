@@ -11,15 +11,13 @@ import {
   Post,
   UseInterceptors,
 } from '@nestjs/common';
-import { ProjectGroupsService } from './project-groups.service';
-import { CreateProjectGroupDto, UpdateProjectGroupDto } from '../../types/project-group';
+import { GroupsService } from './groups.service';
+import { CreateGroupDto, UpdateGroupDto } from '../../types/project-group';
 
-@Controller('project-groups')
+@Controller('groups')
 @UseInterceptors(ClassSerializerInterceptor)
-export class ProjectGroupsController {
-  constructor(
-    @Inject(ProjectGroupsService.token) private readonly projectGroups: ProjectGroupsService,
-  ) {}
+export class GroupsController {
+  constructor(@Inject(GroupsService.token) private readonly projectGroups: GroupsService) {}
 
   @Get('/')
   async getAll() {
@@ -34,13 +32,13 @@ export class ProjectGroupsController {
   }
 
   @Post('/')
-  async create(@Body() data: CreateProjectGroupDto) {
+  async create(@Body() data: CreateGroupDto) {
     // create project group
     return await this.projectGroups.create(data);
   }
 
   @Patch('/:id')
-  async update(@Param('id', ParseUUIDPipe) id: string, @Body() data: UpdateProjectGroupDto) {
+  async update(@Param('id', ParseUUIDPipe) id: string, @Body() data: UpdateGroupDto) {
     // update project group
     return await this.projectGroups.update(id, data);
   }

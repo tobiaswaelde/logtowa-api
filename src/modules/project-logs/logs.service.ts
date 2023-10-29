@@ -1,6 +1,6 @@
 import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
 import { Filter, QueryService, SortField } from '@nestjs-query/core';
-import { Log, Project } from '../../models';
+import { Log, App } from '../../models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
@@ -14,7 +14,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
 
   constructor(
     @InjectRepository(Log) readonly repo: Repository<Log>,
-    @InjectRepository(Project) readonly projectsRepo: Repository<Project>,
+    @InjectRepository(App) readonly appsRepo: Repository<App>,
   ) {
     super(repo);
   }
@@ -32,7 +32,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
         limit: pageOptions.perPage,
         offset: pageOptions.skip,
       },
-      filter: { ...filter, project: { id: { eq: projectId } } },
+      filter: { ...filter, app: { id: { eq: projectId } } },
       sorting: sort,
     });
 
@@ -48,12 +48,12 @@ export class LogsService extends TypeOrmQueryService<Log> {
     return LogDto.fromLog(log);
   }
 
-  async create(projectKey: string, data: CreateLogDto) {
-    const project = await this.projectsRepo.findOneBy({ id: projectKey });
-    if (!project) throw new BadRequestException('Invalid Project ID.');
+  async create(appKey: string, data: CreateLogDto) {
+    const app = await this.appsRepo.findOneBy({ id: appKey });
+    if (!app) throw new BadRequestException('Invalid App ID.');
 
     const log = this.repo.create({ ...data });
-    log.project = project;
+    log.app = app;
 
     await this.repo.save(log, { reload: true });
     return LogDto.fromLog(log);

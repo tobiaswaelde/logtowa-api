@@ -1,14 +1,14 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToMany } from 'typeorm';
-import { ProjectGroup } from './project-group';
+import { Group } from './group';
 import { Log } from './log';
 
-@Entity('projects')
-export class Project {
+@Entity('apps')
+export class App {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => ProjectGroup, (pg) => pg.projects, { onDelete: 'SET NULL' })
-  group: ProjectGroup;
+  @ManyToOne(() => Group, (pg) => pg.apps, { onDelete: 'SET NULL' })
+  group: Group;
 
   @Column({ nullable: true, default: null, length: 255 })
   name: string;
@@ -16,6 +16,6 @@ export class Project {
   @Column({ nullable: true, default: null, length: 2000 })
   repoUrl?: string;
 
-  @OneToMany(() => Log, (l) => l.project, { onDelete: 'CASCADE' })
+  @OneToMany(() => Log, (l) => l.app, { onDelete: 'CASCADE' })
   logs: Log[];
 }

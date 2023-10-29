@@ -1,26 +1,24 @@
 import { IsNotEmpty, IsOptional, IsUUID, MaxLength } from 'class-validator';
-import { ProjectGroup } from '../models';
+import { Group } from '../models';
 
-export class ProjectGroupDto {
+export class GroupDto {
   id: string;
   name: string;
-  parent: ProjectGroupDto;
-  children: ProjectGroupDto[];
+  parent: GroupDto;
+  children: GroupDto[];
   projects: any[];
 
-  constructor(partial: Partial<ProjectGroupDto>) {
+  constructor(partial: Partial<GroupDto>) {
     Object.assign(this, partial);
   }
 
-  public static fromProjectGroup(projectGroup: ProjectGroup) {
-    const parent = projectGroup.parent
-      ? ProjectGroupDto.fromProjectGroup(projectGroup.parent)
-      : undefined;
-    const children = projectGroup.children?.map((x) => ProjectGroupDto.fromProjectGroup(x)) ?? [];
-    const projects = projectGroup.projects?.map((x) => x) ?? [];
+  public static fromGroup(group: Group) {
+    const parent = group.parent ? GroupDto.fromGroup(group.parent) : undefined;
+    const children = group.children?.map((x) => GroupDto.fromGroup(x)) ?? [];
+    const projects = group.apps?.map((x) => x) ?? [];
 
-    return new ProjectGroupDto({
-      ...projectGroup,
+    return new GroupDto({
+      ...group,
       parent: parent,
       children: children,
       projects: projects,
@@ -28,7 +26,7 @@ export class ProjectGroupDto {
   }
 }
 
-export class CreateProjectGroupDto {
+export class CreateGroupDto {
   @IsNotEmpty()
   @MaxLength(255)
   name: string;
@@ -38,7 +36,7 @@ export class CreateProjectGroupDto {
   parent?: string;
 }
 
-export class UpdateProjectGroupDto {
+export class UpdateGroupDto {
   @IsOptional()
   @MaxLength(255)
   name?: string;

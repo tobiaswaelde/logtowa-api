@@ -12,43 +12,43 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
-import { ProjectsService } from './projects.service';
-import { CreateProjectDto, UpdateProjectDto } from '../../types/project';
+import { AppsService } from './apps.service';
+import { CreateAppDto, UpdateAppDto } from '../../types/project';
 import { LogsService } from '../project-logs/logs.service';
 import { PageOptionsDto } from '../../types/pagination';
 import { Filter, SortField } from '@nestjs-query/core';
 import { Log } from '../../models';
 
-@Controller('projects')
+@Controller('apps')
 @UseInterceptors(ClassSerializerInterceptor)
-export class ProjectsController {
+export class AppsController {
   constructor(
-    @Inject(ProjectsService.token) private readonly projects: ProjectsService,
+    @Inject(AppsService.token) private readonly apps: AppsService,
     @Inject(LogsService.token) private readonly logs: LogsService,
   ) {}
 
   @Get('/:id')
   async get(@Param('id', ParseUUIDPipe) id: string) {
-    // get project by ID
-    return this.projects.get(id);
+    // get app by ID
+    return this.apps.get(id);
   }
 
   @Post('/')
-  async create(@Body() data: CreateProjectDto) {
-    // create project
-    return this.projects.create(data);
+  async create(@Body() data: CreateAppDto) {
+    // create app
+    return this.apps.create(data);
   }
 
   @Patch('/:id')
-  async update(@Param('id', ParseUUIDPipe) id: string, @Body() data: UpdateProjectDto) {
-    // update project
-    return this.projects.update(id, data);
+  async update(@Param('id', ParseUUIDPipe) id: string, @Body() data: UpdateAppDto) {
+    // update app
+    return this.apps.update(id, data);
   }
 
   @Delete('/:id')
   async delete(@Param('id', ParseUUIDPipe) id: string) {
-    // delete project
-    return this.projects.delete(id);
+    // delete app
+    return this.apps.delete(id);
   }
 
   //#region logs
@@ -66,7 +66,7 @@ export class ProjectsController {
   @Get('/:id/logs/count')
   async count(@Param('id', ParseUUIDPipe) id: string, @Query('filter') filter: Filter<Log>) {
     // get number of logs
-    return this.logs.count({ ...filter, project: { id: { eq: id } } });
+    return this.logs.count({ ...filter, app: { id: { eq: id } } });
   }
   //#endregion
 }

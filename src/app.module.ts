@@ -1,17 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeormModuleOptions } from './config/db';
-import { ProjectGroupsModule } from './modules/project-groups/project-groups.module';
-import { ProjectsModule } from './modules/projects/projects.module';
+import { GroupsModule } from './modules/groups/groups.module';
+import { AppsModule } from './modules/apps/apps.module';
 import { LogsModule } from './modules/project-logs/logs.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot(typeormModuleOptions),
-    ProjectGroupsModule,
-    ProjectsModule,
-    LogsModule,
-  ],
+  imports: [TypeOrmModule.forRoot(typeormModuleOptions), GroupsModule, AppsModule, LogsModule],
   controllers: [],
   providers: [],
 })

@@ -1,28 +1,28 @@
 import { IsNotEmpty, IsOptional, IsUUID, MaxLength } from 'class-validator';
-import { Project } from '../models';
-import { ProjectGroupDto } from './project-group';
+import { App } from '../models';
+import { GroupDto } from './project-group';
 
-export class ProjectDto {
+export class AppDto {
   id: string;
-  group: ProjectGroupDto;
+  group: GroupDto;
   name: string;
   repoUrl?: string;
 
-  constructor(partial: Partial<ProjectDto>) {
+  constructor(partial: Partial<AppDto>) {
     Object.assign(this, partial);
   }
 
-  public static fromProject(project: Project): ProjectDto {
-    const group = project.group ? ProjectGroupDto.fromProjectGroup(project.group) : undefined;
+  public static fromProject(app: App): AppDto {
+    const group = app.group ? GroupDto.fromGroup(app.group) : undefined;
 
-    return new ProjectDto({
-      ...project,
+    return new AppDto({
+      ...app,
       group: group,
     });
   }
 }
 
-export class CreateProjectDto {
+export class CreateAppDto {
   @IsNotEmpty()
   @IsUUID('4')
   group: string;
@@ -36,7 +36,7 @@ export class CreateProjectDto {
   repoUrl?: string;
 }
 
-export class UpdateProjectDto {
+export class UpdateAppDto {
   @IsOptional()
   @IsUUID('4')
   group: string;

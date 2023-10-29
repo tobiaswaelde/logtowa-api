@@ -1,17 +1,17 @@
 import { LogsController } from './logs.controller';
 import { Module } from '@nestjs/common';
 import { LogsGateway } from './logs.gateway';
-import { ProjectsService } from '../projects/projects.service';
+import { AppsService } from '../apps/apps.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Log, Project, ProjectGroup } from '../../models';
+import { Log, Group, App } from '../../models';
 import { LogsService } from './logs.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProjectGroup, Project, Log])],
+  imports: [TypeOrmModule.forFeature([Group, App, Log])],
   controllers: [LogsController],
   providers: [
     { provide: LogsService.token, useClass: LogsService },
-    { provide: ProjectsService.token, useClass: ProjectsService },
+    { provide: AppsService.token, useClass: AppsService },
     LogsGateway,
   ],
 })

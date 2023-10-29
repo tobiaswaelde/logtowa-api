@@ -1,7 +1,7 @@
 import { Log } from './log';
-import { Project } from './project';
-import { ProjectGroup } from './project-group';
+import { App } from './app';
+import { Group } from './group';
 
-export { ProjectGroup, Project, Log };
+export { Group, App, Log };
 
-export const entities = [ProjectGroup, Project, Log];
+export const entities = [Group, App, Log];
