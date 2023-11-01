@@ -21,6 +21,7 @@
     "push": "./scripts/push-to-docker.sh"
   },
   "dependencies": {
+    "@influxdata/influxdb-client": "^1.33.2",
     "@nestjs-query/core": "^0.30.0",
     "@nestjs-query/query-typeorm": "^0.30.0",
     "@nestjs/common": "^10.0.0",
@@ -29,6 +30,7 @@
     "@nestjs/platform-socket.io": "^10.2.7",
     "@nestjs/typeorm": "^10.0.0",
     "@nestjs/websockets": "^10.2.7",
+    "axios": "^1.6.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "dotenv": "^16.3.1",

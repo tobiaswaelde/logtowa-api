@@ -41,16 +41,17 @@ export class LogsGateway {
       timestamp: new Date(),
       ...rest,
     });
+    console.log(log);
 
     // send log to socket
-    this.server.emit(appKey, {
-      id: log.id,
-      timestamp: log.timestamp,
-      level: log.level,
-      scope: log.scope,
-      message: log.message,
-      meta: log.meta,
-    });
+    // this.server.emit(appKey, {
+    //   id: log.id,
+    //   timestamp: log.timestamp,
+    //   level: log.level,
+    //   scope: log.scope,
+    //   message: log.message,
+    //   meta: log.meta,
+    // });
   }
 
   private getToken(client: Socket): string {

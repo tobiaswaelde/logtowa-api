@@ -17,7 +17,6 @@ import { CreateAppDto, UpdateAppDto } from '../../types/project';
 import { LogsService } from '../app-logs/logs.service';
 import { PageOptionsDto } from '../../types/pagination';
 import { Filter, SortField } from '@nestjs-query/core';
-import { Log } from '../../models';
 
 @Controller('apps')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -56,17 +55,20 @@ export class AppsController {
   async getAll(
     @Param('id', ParseUUIDPipe) id: string,
     @Query() pageOptions: PageOptionsDto,
-    @Query('filter') filter: Filter<Log>,
-    @Query('sort') sort: SortField<Log>[],
+    // @Query('filter') filter: Filter<Log>,
+    // @Query('sort') sort: SortField<Log>[],
   ) {
     // get all logs
-    return this.logs.getAll(id, pageOptions, filter, sort);
+    // return this.logs.getAll(id, pageOptions, filter, sort);
   }
 
   @Get('/:id/logs/count')
-  async count(@Param('id', ParseUUIDPipe) id: string, @Query('filter') filter: Filter<Log>) {
+  async count(
+    @Param('id', ParseUUIDPipe) id: string,
+    // @Query('filter') filter: Filter<Log>
+  ) {
     // get number of logs
-    return this.logs.count({ ...filter, app: { id: { eq: id } } });
+    // return this.logs.count({ ...filter, app: { id: { eq: id } } });
   }
 
   @Get('/:id/logs/charts/hour')

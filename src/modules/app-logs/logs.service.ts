@@ -1,6 +1,6 @@
 import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
 import { Filter, QueryService, SortField } from '@nestjs-query/core';
-import { Log, App } from '../../models';
+import { App } from '../../models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThanOrEqual } from 'typeorm';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
@@ -8,65 +8,71 @@ import { PageMetaDto, PageOptionsDto, PaginatedDto } from '../../types/paginatio
 import { CreateLogDto, LogDto } from '../../types/log';
 import * as moment from 'moment';
 import { ChartData } from '../../types/chart-data';
+import { influxdb } from '../../config/influxdb';
+import { ENV } from '../../config/env';
+import { Point } from '@influxdata/influxdb-client';
 
 @Injectable()
-@QueryService(Log)
-export class LogsService extends TypeOrmQueryService<Log> {
+export class LogsService {
   public static token: string = 'LOGS_SERVICE';
 
-  constructor(
-    @InjectRepository(Log) readonly repo: Repository<Log>,
-    @InjectRepository(App) readonly appsRepo: Repository<App>,
-  ) {
-    super(repo);
-  }
+  constructor(@InjectRepository(App) readonly appsRepo: Repository<App>) {}
 
   async getAll(
     projectId: string,
     pageOptions: PageOptionsDto,
-    filter?: Filter<Log>,
-    sort?: SortField<Log>[],
+    // filter?: Filter<Log>,
+    // sort?: SortField<Log>[],
   ) {
-    const count = await this.count({ ...filter, app: { id: { eq: projectId } } });
-
-    const items = await this.query({
-      paging: {
-        limit: pageOptions.perPage,
-        offset: pageOptions.skip,
-      },
-      filter: { ...filter, app: { id: { eq: projectId } } },
-      sorting: sort,
-    });
-
-    const logs = items.map(LogDto.fromLog).map(({ meta, ...rest }) => ({ ...rest }));
-    const pageMeta = new PageMetaDto({ itemCount: count, pageOptions });
-
-    return new PaginatedDto(logs, pageMeta);
+    // const count = await this.count({ ...filter, app: { id: { eq: projectId } } });
+    // const items = await this.query({
+    //   paging: {
+    //     limit: pageOptions.perPage,
+    //     offset: pageOptions.skip,
+    //   },
+    //   filter: { ...filter, app: { id: { eq: projectId } } },
+    //   sorting: sort,
+    // });
+    // const logs = items.map(LogDto.fromLog).map(({ meta, ...rest }) => ({ ...rest }));
+    // const pageMeta = new PageMetaDto({ itemCount: count, pageOptions });
+    // return new PaginatedDto(logs, pageMeta);
   }
 
   async get(id: string) {
-    const log = await this.repo.findOneBy({ id });
-    if (!log) throw new NotFoundException();
-    return LogDto.fromLog(log);
+    // const log = await this.repo.findOneBy({ id });
+    // if (!log) throw new NotFoundException();
+    // return LogDto.fromLog(log);
   }
 
   async create(appKey: string, data: CreateLogDto) {
     const app = await this.appsRepo.findOneBy({ id: appKey });
     if (!app) throw new BadRequestException('Invalid App ID.');
 
-    const log = this.repo.create({ ...data });
-    log.app = app;
+    const point = new Point('log')
+      .tag('level', data.level)
+      .tag('scope', data.scope)
+      .uintField('timestamp', data.timestamp.valueOf())
+      .stringField('meta', JSON.stringify(data.meta))
+      .stringField('message', data.message);
+    console.log(point);
 
-    await this.repo.save(log, { reload: true });
-    return LogDto.fromLog(log);
+    const writeApi = influxdb.getWriteApi(ENV.INFLUXDB_ORG, app.bucketId, 'ns');
+    writeApi.useDefaultTags({ appid: appKey });
+    writeApi.writePoint(point);
+
+    // const log = this.repo.create({ ...data });
+    // log.app = app;
+    // await this.repo.save(log, { reload: true });
+    // return LogDto.fromLog(log);
   }
 
   private async getLogsSince(date: Date) {
-    return this.repo.find({
-      select: ['timestamp', 'level'],
-      order: { timestamp: 'asc' },
-      where: { timestamp: MoreThanOrEqual(date) },
-    });
+    // return this.repo.find({
+    //   select: ['timestamp', 'level'],
+    //   order: { timestamp: 'asc' },
+    //   where: { timestamp: MoreThanOrEqual(date) },
+    // });
+    return [];
   }
 
   private getMinutes(date: moment.Moment) {

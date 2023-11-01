@@ -5,6 +5,7 @@ import { App, Group } from '../../models';
 import { Repository, Not } from 'typeorm';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateAppDto, AppDto, UpdateAppDto } from '../../types/project';
+import { InfluxApi } from '../../lib/influx-api';
 
 @Injectable()
 @QueryService(App)
@@ -41,6 +42,14 @@ export class AppsService extends TypeOrmQueryService<App> {
 
     await this.repo.save(app, { reload: true });
 
+    // create InfluxDB bucket
+    const bucket = await InfluxApi.createBucket(app.id, app.name);
+    if (!bucket) {
+      throw new BadRequestException('Bucket not created.');
+    }
+    app.bucketId = bucket.id;
+    await this.repo.save(app, { reload: true });
+
     return AppDto.fromProject(app);
   }
 
@@ -68,9 +77,14 @@ export class AppsService extends TypeOrmQueryService<App> {
   }
 
   async delete(id: string) {
+    // find app
     const app = await this.repo.findOneBy({ id });
     if (!app) throw new NotFoundException();
 
+    // delete bucket
+    await InfluxApi.deleteBucket(app.bucketId);
+
+    // delete app
     await this.deleteOne(id);
     return AppDto.fromProject(app);
   }

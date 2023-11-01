@@ -18,6 +18,10 @@ export const ENV = cleanEnv(process.env, {
   DB_PASSWORD: str(),
   DB_SECURE: bool({ default: true }),
   DB_SYNC: bool({ default: false, devDefault: true }),
+  // influxdb
+  INFLUXDB_URL: str(),
+  INFLUXDB_TOKEN: str(),
+  INFLUXDB_ORG: str(),
   // auth
   SOCKET_TOKEN: str({
     desc: 'Token to authenticate socket connections. Used by the winston transport.',
