@@ -68,5 +68,20 @@ export class AppsController {
     // get number of logs
     return this.logs.count({ ...filter, app: { id: { eq: id } } });
   }
+
+  @Get('/:id/logs/charts/hour')
+  async getChartHour(@Param('id', ParseUUIDPipe) id: string) {
+    return this.logs.getChartHour(id);
+  }
+
+  @Get('/:id/logs/charts/day')
+  async getChartDay(@Param('id', ParseUUIDPipe) id: string) {
+    return this.logs.getChartDay(id);
+  }
+
+  @Get('/:id/logs/charts/month')
+  async getChartMonth(@Param('id', ParseUUIDPipe) id: string) {
+    return this.logs.getChartMonth(id);
+  }
   //#endregion
 }
