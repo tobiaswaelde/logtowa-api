@@ -14,11 +14,11 @@ export class Log {
   app: App;
 
   @Column()
-  //TODO @Column({length:255})
+  @Column({ length: 255 })
   level: string;
 
   @Column({ nullable: true, default: null })
-  //TODO @Column({ nullable: true, default: null,length:255 })
+  @Column({ nullable: true, default: null, length: 255 })
   scope?: string;
 
   @Column()
