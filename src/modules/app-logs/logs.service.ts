@@ -2,7 +2,7 @@ import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
 import { Filter, QueryService, SortField } from '@nestjs-query/core';
 import { Log, App } from '../../models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThanOrEqual } from 'typeorm';
+import { Repository, MoreThanOrEqual, Equal, In } from 'typeorm';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PageMetaDto, PageOptionsDto, PaginatedDto } from '../../types/pagination';
 import { CreateLogDto, LogDto } from '../../types/log';
@@ -61,11 +61,15 @@ export class LogsService extends TypeOrmQueryService<Log> {
     return LogDto.fromLog(log);
   }
 
-  private async getLogsSince(date: Date) {
+  private async getLogsSince(appId: string, date: Date, levels: string[]) {
     return this.repo.find({
       select: ['timestamp', 'level'],
       order: { timestamp: 'asc' },
-      where: { timestamp: MoreThanOrEqual(date) },
+      where: {
+        app: Equal(appId),
+        timestamp: MoreThanOrEqual(date),
+        level: In(levels),
+      },
     });
   }
 
@@ -106,7 +110,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
     return days;
   }
 
-  async getChartHour(id: string): Promise<ChartData> {
+  async getChartHour(id: string, selectedLevels: string[]): Promise<ChartData> {
     const now = moment();
     const lastHour = moment(now).subtract(1, 'hour');
     const minutes = this.getMinutes(now);
@@ -118,7 +122,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
 
     const levels = new Set<string>();
 
-    const logs = await this.getLogsSince(lastHour.toDate());
+    const logs = await this.getLogsSince(id, lastHour.toDate(), selectedLevels);
     logs.forEach((log) => {
       levels.add(log.level);
       const minute = moment(log.timestamp).format('YYYY-MM-DD HH:mm');
@@ -140,7 +144,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
     };
   }
 
-  async getChartDay(id: string) {
+  async getChartDay(id: string, selectedLevels: string[]) {
     const now = moment();
     const lastDay = moment(now).subtract(1, 'day');
     const hours = this.getHours(now);
@@ -152,7 +156,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
 
     const levels = new Set<string>();
 
-    const logs = await this.getLogsSince(lastDay.toDate());
+    const logs = await this.getLogsSince(id, lastDay.toDate(), selectedLevels);
     logs.forEach((log) => {
       levels.add(log.level);
       const hour = moment(log.timestamp).format('YYYY-MM-DD HH');
@@ -174,7 +178,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
     };
   }
 
-  async getChartMonth(id: string) {
+  async getChartMonth(id: string, selectedLevels: string[]) {
     const now = moment();
     const lastMonth = moment(now).subtract(1, 'month');
     const days = this.getDays(now);
@@ -186,7 +190,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
 
     const levels = new Set<string>();
 
-    const logs = await this.getLogsSince(lastMonth.toDate());
+    const logs = await this.getLogsSince(id, lastMonth.toDate(), selectedLevels);
     logs.forEach((log) => {
       levels.add(log.level);
       const hour = moment(log.timestamp).format('YYYY-MM-DD');

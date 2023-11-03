@@ -70,18 +70,27 @@ export class AppsController {
   }
 
   @Get('/:id/logs/charts/hour')
-  async getChartHour(@Param('id', ParseUUIDPipe) id: string) {
-    return this.logs.getChartHour(id);
+  async getChartHour(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('levels') levels: string[] = [],
+  ) {
+    return this.logs.getChartHour(id, levels);
   }
 
   @Get('/:id/logs/charts/day')
-  async getChartDay(@Param('id', ParseUUIDPipe) id: string) {
-    return this.logs.getChartDay(id);
+  async getChartDay(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('levels') levels: string[] = [],
+  ) {
+    return this.logs.getChartDay(id, levels);
   }
 
   @Get('/:id/logs/charts/month')
-  async getChartMonth(@Param('id', ParseUUIDPipe) id: string) {
-    return this.logs.getChartMonth(id);
+  async getChartMonth(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('levels') levels: string[] = [],
+  ) {
+    return this.logs.getChartMonth(id, levels);
   }
   //#endregion
 }
