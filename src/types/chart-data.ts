@@ -6,3 +6,5 @@ export type ChartData = {
     data: number[];
   }[];
 };
+
+export type ChartDuration = 'hour' | 'day' | 'month';

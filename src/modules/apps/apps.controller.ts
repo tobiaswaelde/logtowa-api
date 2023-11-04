@@ -18,6 +18,8 @@ import { LogsService } from '../app-logs/logs.service';
 import { PageOptionsDto } from '../../types/pagination';
 import { Filter, SortField } from '@nestjs-query/core';
 import { Log } from '../../models';
+import { ChartsService } from '../charts/charts.service';
+import { ChartDuration } from '../../types/chart-data';
 
 @Controller('apps')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -25,6 +27,7 @@ export class AppsController {
   constructor(
     @Inject(AppsService.token) private readonly apps: AppsService,
     @Inject(LogsService.token) private readonly logs: LogsService,
+    @Inject(ChartsService.token) private readonly charts: ChartsService,
   ) {}
 
   @Get('/:id')
@@ -68,29 +71,16 @@ export class AppsController {
     // get number of logs
     return this.logs.count({ ...filter, app: { id: { eq: id } } });
   }
+  //#endregion
 
-  @Get('/:id/logs/charts/hour')
-  async getChartHour(
+  //#region charts
+  @Get('/:id/charts/:duration')
+  async getChart(
     @Param('id', ParseUUIDPipe) id: string,
-    @Query('levels') levels: string[] = [],
+    @Param('duration') duration: ChartDuration,
+    @Query('levels') levels?: string[],
   ) {
-    return this.logs.getChartHour(id, levels);
-  }
-
-  @Get('/:id/logs/charts/day')
-  async getChartDay(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('levels') levels: string[] = [],
-  ) {
-    return this.logs.getChartDay(id, levels);
-  }
-
-  @Get('/:id/logs/charts/month')
-  async getChartMonth(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('levels') levels: string[] = [],
-  ) {
-    return this.logs.getChartMonth(id, levels);
+    return this.charts.getLogsCharts(duration, id, levels);
   }
   //#endregion
 }
