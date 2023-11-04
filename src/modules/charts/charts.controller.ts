@@ -18,4 +18,9 @@ export class ChartsController {
   async getLogsChart(@Param('duration') duration: ChartDuration) {
     return this.charts.getLogsCharts(duration);
   }
+
+  @Get('/levels/:duration')
+  async getLevelsChart(@Param('duration') duration: ChartDuration) {
+    return this.charts.getLevelsChart(duration);
+  }
 }

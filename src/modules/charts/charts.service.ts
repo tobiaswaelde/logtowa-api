@@ -86,7 +86,7 @@ export class ChartsService extends TypeOrmQueryService<Log> {
       intervalCounts[key] = {};
     }
 
-    const levels = new Set<string>();
+    const levels = new Set<string>(['error', 'warn', 'info', 'http', 'debug', 'silly', 'verbose']);
 
     // get data
     const logs = await this.getLogsSince(lastInterval.toDate(), appId, selectedLevels);
@@ -118,19 +118,19 @@ export class ChartsService extends TypeOrmQueryService<Log> {
     const now = moment();
     const lastInterval = moment(now).subtract(1, duration);
 
-    const levels = new Set<string>();
+    const levels = new Set<string>(['error', 'warn', 'info', 'http', 'debug', 'silly', 'verbose']);
     const data = new Map<string, number>();
 
     const logs = await this.getLogsSince(lastInterval.toDate());
     logs.forEach(({ level }) => {
       levels.add(level);
-      data.set(level, data.get(level) || 0);
+      data.set(level, (data.get(level) || 0) + 1);
     });
 
     // prepare data
     const sortedLevels = Array.from(levels).sort((a, b) => a.localeCompare(b));
     const labels = sortedLevels;
-    const series = sortedLevels.map(data.get);
+    const series = sortedLevels.map((x) => data.get(x) || 0);
 
     // return chart data
     return {
