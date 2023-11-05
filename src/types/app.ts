@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsUUID, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsUUID, Max, MaxLength, Min } from 'class-validator';
 import { App } from '../models';
 import { GroupDto } from './project-group';
 
@@ -7,6 +7,7 @@ export class AppDto {
   group: GroupDto;
   name: string;
   repoUrl?: string;
+  retentionSeconds: number;
 
   constructor(partial: Partial<AppDto>) {
     Object.assign(this, partial);
@@ -34,6 +35,11 @@ export class CreateAppDto {
   @IsOptional()
   @MaxLength(2000)
   repoUrl?: string;
+
+  @IsNotEmpty()
+  @Min(0)
+  @Max(315360000) // 10 years
+  retentionSeconds: number;
 }
 
 export class UpdateAppDto {
@@ -48,4 +54,9 @@ export class UpdateAppDto {
   @IsOptional()
   @MaxLength(2000)
   repoUrl?: string;
+
+  @IsOptional()
+  @Min(0)
+  @Max(315360000) // 10 years
+  retentionSeconds?: number;
 }

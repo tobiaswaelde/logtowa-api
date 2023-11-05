@@ -13,7 +13,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AppsService } from './apps.service';
-import { CreateAppDto, UpdateAppDto } from '../../types/project';
+import { CreateAppDto, UpdateAppDto } from '../../types/app';
 import { LogsService } from '../app-logs/logs.service';
 import { PageOptionsDto } from '../../types/pagination';
 import { Filter, SortField } from '@nestjs-query/core';

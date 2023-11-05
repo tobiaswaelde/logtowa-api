@@ -16,6 +16,9 @@ export class App {
   @Column({ nullable: true, default: null, length: 2000 })
   repoUrl?: string;
 
+  @Column({ nullable: false, default: 60 * 60 * 24 * 30 })
+  retentionSeconds: number;
+
   @OneToMany(() => Log, (l) => l.app, { onDelete: 'CASCADE' })
   logs: Log[];
 }

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { App, Group } from '../../models';
 import { Repository, Not } from 'typeorm';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { CreateAppDto, AppDto, UpdateAppDto } from '../../types/project';
+import { CreateAppDto, AppDto, UpdateAppDto } from '../../types/app';
 
 @Injectable()
 @QueryService(App)
