@@ -23,4 +23,7 @@ export const ENV = cleanEnv(process.env, {
     desc: 'Token to authenticate socket connections. Used by the winston transport.',
   }),
   AUTH_TOKEN: str({ desc: 'Token to authenticate API requests. Used by the frontend.' }),
+  // retention
+  RETENTION_ENABLED: bool({ default: true }),
+  RETENTION_CRON: str({ default: '0 0 * * *', devDefault: '* * * * *' }),
 });

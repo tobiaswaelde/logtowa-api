@@ -2,12 +2,14 @@ import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
 import { Filter, QueryService, SortField } from '@nestjs-query/core';
 import { Log, App } from '../../models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThanOrEqual, Equal, In } from 'typeorm';
+import { Repository, LessThan } from 'typeorm';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PageMetaDto, PageOptionsDto, PaginatedDto } from '../../types/pagination';
 import { CreateLogDto, LogDto } from '../../types/log';
 import * as moment from 'moment';
-import { ChartData } from '../../types/chart-data';
+import { runInSequence } from 'run-in-sequence';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { ENV } from '../../config/env';
 
 @Injectable()
 @QueryService(Log)
@@ -15,6 +17,7 @@ export class LogsService extends TypeOrmQueryService<Log> {
   public static token: string = 'LOGS_SERVICE';
 
   constructor(
+    private scheduler: SchedulerRegistry,
     @InjectRepository(Log) readonly repo: Repository<Log>,
     @InjectRepository(App) readonly appsRepo: Repository<App>,
   ) {
@@ -61,154 +64,28 @@ export class LogsService extends TypeOrmQueryService<Log> {
     return LogDto.fromLog(log);
   }
 
-  private async getLogsSince(appId: string, date: Date, levels: string[]) {
-    return this.repo.find({
-      select: ['timestamp', 'level'],
-      order: { timestamp: 'asc' },
-      where: {
-        app: Equal(appId),
-        timestamp: MoreThanOrEqual(date),
-        level: In(levels),
-      },
-    });
-  }
+  @Cron(ENV.RETENTION_CRON, { name: 'log-retention', disabled: !ENV.RETENTION_ENABLED })
+  public async checkLogRetention() {
+    // get apps
+    const apps = await this.appsRepo.find({ select: { id: true, retentionSeconds: true } });
 
-  private getMinutes(date: moment.Moment) {
-    const lastHour = date.clone().subtract(1, 'hour');
-
-    const minutes: string[] = [];
-    while (lastHour.isBefore(date.endOf('minute'))) {
-      const minute = lastHour.format('YYYY-MM-DD HH:mm');
-      minutes.push(minute);
-      lastHour.add(1, 'minute');
-    }
-
-    return minutes;
-  }
-  private getHours(date: moment.Moment) {
-    const lastDay = date.clone().subtract(1, 'day');
-
-    const hours: string[] = [];
-    while (lastDay.isBefore(date.endOf('hour'))) {
-      const hour = lastDay.format('YYYY-MM-DD HH');
-      hours.push(hour);
-      lastDay.add(1, 'hour');
-    }
-
-    return hours;
-  }
-  private getDays(date: moment.Moment) {
-    const lastMonth = date.clone().subtract(1, 'month');
-
-    const days: string[] = [];
-    while (lastMonth.isBefore(date.endOf('day'))) {
-      const day = lastMonth.format('YYYY-MM-DD');
-      days.push(day);
-      lastMonth.add(1, 'day');
-    }
-
-    return days;
-  }
-
-  async getChartHour(id: string, selectedLevels: string[]): Promise<ChartData> {
-    const now = moment();
-    const lastHour = moment(now).subtract(1, 'hour');
-    const minutes = this.getMinutes(now);
-
-    const minuteCounts: { [minute: string]: { [level: string]: number } } = {};
-    for (const minute of minutes) {
-      minuteCounts[minute] = minuteCounts[minute] || {};
-    }
-
-    const levels = new Set<string>();
-
-    const logs = await this.getLogsSince(id, lastHour.toDate(), selectedLevels);
-    logs.forEach((log) => {
-      levels.add(log.level);
-      const minute = moment(log.timestamp).format('YYYY-MM-DD HH:mm');
-
-      minuteCounts[minute] = minuteCounts[minute] || {};
-      minuteCounts[minute][log.level] = (minuteCounts[minute][log.level] || 0) + 1;
+    // get functions to delete old logs
+    const deleteOldLogsFunctions = apps.map((app) => async () => {
+      // calculate timestamp of the last log to keep
+      const ts = moment().subtract(app.retentionSeconds, 'seconds').toDate();
+      // delete logs older than the timestamp
+      await this.repo.delete({ app: { id: app.id }, timestamp: LessThan(ts) });
     });
 
-    const labels = minutes.map((x) => moment(x).format('HH:mm'));
-    const series = Array.from(levels).map((level) => ({
-      level: level,
-      data: Object.values(minuteCounts).map((x) => x[level] || 0),
-    }));
+    await runInSequence(deleteOldLogsFunctions);
+  }
 
+  async getRetentionInfo() {
+    const job = this.scheduler.getCronJob('log-retention');
     return {
-      levels: Array.from(levels),
-      labels: labels,
-      series: series,
-    };
-  }
-
-  async getChartDay(id: string, selectedLevels: string[]) {
-    const now = moment();
-    const lastDay = moment(now).subtract(1, 'day');
-    const hours = this.getHours(now);
-
-    const hourCounts: { [hour: string]: { [level: string]: number } } = {};
-    for (const hour of hours) {
-      hourCounts[hour] = hourCounts[hour] || {};
-    }
-
-    const levels = new Set<string>();
-
-    const logs = await this.getLogsSince(id, lastDay.toDate(), selectedLevels);
-    logs.forEach((log) => {
-      levels.add(log.level);
-      const hour = moment(log.timestamp).format('YYYY-MM-DD HH');
-
-      hourCounts[hour] = hourCounts[hour] || {};
-      hourCounts[hour][log.level] = (hourCounts[hour][log.level] || 0) + 1;
-    });
-
-    const labels = hours.map((x) => moment(x).format('HH:mm'));
-    const series = Array.from(levels).map((level) => ({
-      level: level,
-      data: Object.values(hourCounts).map((x) => x[level] || 0),
-    }));
-
-    return {
-      levels: Array.from(levels),
-      labels: labels,
-      series: series,
-    };
-  }
-
-  async getChartMonth(id: string, selectedLevels: string[]) {
-    const now = moment();
-    const lastMonth = moment(now).subtract(1, 'month');
-    const days = this.getDays(now);
-
-    const dayCounts: { [day: string]: { [level: string]: number } } = {};
-    for (const day of days) {
-      dayCounts[day] = dayCounts[day] || {};
-    }
-
-    const levels = new Set<string>();
-
-    const logs = await this.getLogsSince(id, lastMonth.toDate(), selectedLevels);
-    logs.forEach((log) => {
-      levels.add(log.level);
-      const hour = moment(log.timestamp).format('YYYY-MM-DD');
-
-      dayCounts[hour] = dayCounts[hour] || {};
-      dayCounts[hour][log.level] = (dayCounts[hour][log.level] || 0) + 1;
-    });
-
-    const labels = days.map((x) => moment(x).format('YYYY-MM-DD'));
-    const series = Array.from(levels).map((level) => ({
-      level: level,
-      data: Object.values(dayCounts).map((x) => x[level] || 0),
-    }));
-
-    return {
-      levels: Array.from(levels),
-      labels: labels,
-      series: series,
+      lastDate: job.lastDate()?.toISOString() ?? null,
+      nextDate: job.nextDate().toISO(),
+      nextDates: job.nextDates(10).map((x) => x.toISO()),
     };
   }
 }

@@ -14,6 +14,11 @@ import { LogsService } from './logs.service';
 export class LogsController {
   constructor(@Inject(LogsService.token) private readonly logs: LogsService) {}
 
+  @Get('/retention')
+  async getRetentionInfo() {
+    return this.logs.getRetentionInfo();
+  }
+
   @Get('/:id')
   async get(@Param('id', ParseUUIDPipe) id: string) {
     // get log info
