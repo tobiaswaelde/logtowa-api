@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AppsService } from './apps.service';
@@ -20,8 +21,10 @@ import { Filter, SortField } from '@nestjs-query/core';
 import { Log } from '../../models';
 import { ChartsService } from '../charts/charts.service';
 import { ChartDuration } from '../../types/chart-data';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @Controller('apps')
+@UseGuards(AuthGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class AppsController {
   constructor(

@@ -29,6 +29,7 @@ export class LogsGateway {
       await this.checkProjectKey(client);
     } catch (err) {
       client.disconnect(true);
+      // throw new Error();
     }
   }
 

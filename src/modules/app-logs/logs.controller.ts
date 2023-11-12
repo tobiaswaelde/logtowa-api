@@ -5,11 +5,14 @@ import {
   Inject,
   Param,
   ParseUUIDPipe,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { LogsService } from './logs.service';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @Controller('logs')
+@UseGuards(AuthGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class LogsController {
   constructor(@Inject(LogsService.token) private readonly logs: LogsService) {}

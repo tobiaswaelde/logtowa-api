@@ -29,6 +29,7 @@ export class AppsService extends TypeOrmQueryService<App> {
 
     const app = this.repo.create({
       name: data.name,
+      retentionSeconds: data.retentionSeconds,
       repoUrl: data.repoUrl,
     });
     if (data.group) {
@@ -53,6 +54,7 @@ export class AppsService extends TypeOrmQueryService<App> {
     });
 
     if (data.name) app.name = data.name;
+    if (data.retentionSeconds) app.retentionSeconds = data.retentionSeconds;
     if (data.repoUrl) app.repoUrl = data.repoUrl;
     if (data.group) {
       const group = await this.groups.findOne({ where: { id: data.group } });
@@ -68,7 +70,7 @@ export class AppsService extends TypeOrmQueryService<App> {
   }
 
   async delete(id: string) {
-    const app = await this.repo.findOneBy({ id });
+    const app = await this.repo.findOne({ where: { id }, relations: { group: true } });
     if (!app) throw new NotFoundException();
 
     await this.deleteOne(id);

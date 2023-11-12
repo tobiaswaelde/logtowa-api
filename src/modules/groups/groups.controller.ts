@@ -9,12 +9,15 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto, UpdateGroupDto } from '../../types/project-group';
+import { AuthGuard } from '../../guards/auth.guard';
 
 @Controller('groups')
+@UseGuards(AuthGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class GroupsController {
   constructor(@Inject(GroupsService.token) private readonly projectGroups: GroupsService) {}
