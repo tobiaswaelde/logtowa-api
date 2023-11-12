@@ -8,12 +8,12 @@ dotenv.config({ path: envPath });
 export const ENV = cleanEnv(process.env, {
   // app
   PORT: num({ default: 3001 }),
-  APP_NAME: str({ default: 'CloudLogger' }),
+  APP_NAME: str({ default: 'LogTowa' }),
   LOG_LEVEL: str({ default: 'warn', devDefault: 'info' }),
   // db
   DB_HOST: str(),
   DB_PORT: num({ default: 5432 }),
-  DB_NAME: str({ devDefault: 'cloudlogger' }),
+  DB_NAME: str({ devDefault: 'logtowa' }),
   DB_USERNAME: str(),
   DB_PASSWORD: str(),
   DB_SECURE: bool({ default: true }),
