@@ -7,7 +7,7 @@ export class Group {
   id: string;
 
   @Column()
-  //TODO @Column({ length: 255 })
+  @Column({ length: 255 })
   name: string;
 
   @ManyToOne(() => Group, (pg) => pg.children, { onDelete: 'SET NULL' })
