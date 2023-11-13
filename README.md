@@ -14,6 +14,49 @@
 
 This is the LogTowa backend. It receives the log messages and provides the API for the frontend.
 
+## Installation
+### Docker
+```yml
+# docker-compose.yml
+version: '3.9'
+
+services:
+  db:
+    container_name: logtowa-db
+    image: post
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: logtowa
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+  logtowa-api:
+    container_name: logtowa-api
+    image: tobiaswaelde/logtowa-app:latest
+    restart: always
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001 # optional
+      LOG_LEVEL: warn # optional
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: logtowa
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+      DB_SECURE: true # optional
+      DB_SYNC: false # optional
+      SOCKET_TOKEN: secret
+      AUTH_TOKEN: secret
+      RETENTION_ENABLED: true # optional
+      RETENTION_CRON: '0 0 * * *' # optional
+```
+
 ## Environment
 | Variable          | Description                                                              | Required | Default Value |
 | ----------------- | ------------------------------------------------------------------------ | -------- | ------------- |
