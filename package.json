@@ -1,7 +1,7 @@
 {
-  "name": "cloudlogger-backend",
+  "name": "logtowa-backend",
   "version": "0.0.1",
-  "description": "CloudLogger Backend",
+  "description": "LogTowa Backend",
   "author": {
     "name": "Tobias Wälde",
     "email": "tobias.waelde@gmail.com",

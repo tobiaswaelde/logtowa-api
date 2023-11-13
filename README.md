@@ -1,4 +1,4 @@
-# CloudLogger Backend
+# LogTowa Backend
 
 <!-- #region badges -->
 [![Quality Gate Status](https://sq.srv.tobiaswaelde.com/api/project_badges/measure?project=tobiaswaelde_cloud-logger-backend_AYs1m5fJPhYnLbS8eM75&metric=alert_status&token=sqb_3d39e1d1780a89e4556a708c98085dad1933e598)](https://sq.srv.tobiaswaelde.com/dashboard?id=tobiaswaelde_cloud-logger-backend_AYs1m5fJPhYnLbS8eM75)
@@ -12,7 +12,7 @@
 > [!WARNING]  
 > This project is still in development. It will be usable as soon as it reaches v1.x
 
-This is the backend of the CloudLogger. It receives the log messages and provides the API for the frontend.
+This is the LogTowa backend. It receives the log messages and provides the API for the frontend.
 
 ## Environment
 | Variable          | Description                                                              | Required | Default Value |
@@ -21,7 +21,7 @@ This is the backend of the CloudLogger. It receives the log messages and provide
 | LOG_LEVEL         | Level for console logs                                                   | no       | warn          |
 | DB_HOST           | Host of the database                                                     | yes      |               |
 | DB_PORT           | Port of the database                                                     | yes      | 5432          |
-| DB_NAME           | Name of the database                                                     | yes      | cloudlogger   |
+| DB_NAME           | Name of the database                                                     | yes      | logtowa       |
 | DB_USERNAME       | User                                                                     | yes      |               |
 | DB_PASSWORD       | Password                                                                 | yes      |               |
 | DB_SECURE         | Flag if database connection is secure                                    | no       | true          |
