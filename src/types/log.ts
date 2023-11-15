@@ -1,9 +1,13 @@
-import { IsNotEmpty, IsOptional, IsObject, MaxLength, IsDate } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsObject, MaxLength, IsDate, IsDateString } from 'class-validator';
 import { Log } from '../models';
 
 export class LogMessage {
   @IsNotEmpty()
   appKey: string;
+
+  @IsOptional()
+  @IsDateString()
+  timestamp?: Date;
 
   @IsNotEmpty()
   @MaxLength(255)
