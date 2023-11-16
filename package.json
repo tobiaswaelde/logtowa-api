@@ -18,7 +18,11 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "dev": "yarn start:dev",
-    "push": "./scripts/push-to-docker.sh"
+    "push": "./scripts/push-to-docker.sh",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:major": "./scripts/deploy-major.sh",
+    "deploy:minor": "./scripts/deploy-minor.sh",
+    "deploy:patch": "./scripts/deploy-patch.sh"
   },
   "dependencies": {
     "@nestjs-query/core": "^0.30.0",
