@@ -13,7 +13,7 @@ export class AppDto {
     Object.assign(this, partial);
   }
 
-  public static fromProject(app: App): AppDto {
+  public static fromApp(app: App): AppDto {
     const group = app.group ? GroupDto.fromGroup(app.group) : undefined;
 
     return new AppDto({

@@ -21,7 +21,7 @@ export class AppsService extends TypeOrmQueryService<App> {
   async get(id: string) {
     const app = await this.repo.findOne({ where: { id }, relations: { group: true } });
     if (!app) throw new NotFoundException();
-    return AppDto.fromProject(app);
+    return AppDto.fromApp(app);
   }
 
   async create(data: CreateAppDto) {
@@ -42,7 +42,7 @@ export class AppsService extends TypeOrmQueryService<App> {
 
     await this.repo.save(app, { reload: true });
 
-    return AppDto.fromProject(app);
+    return AppDto.fromApp(app);
   }
 
   async update(id: string, data: UpdateAppDto) {
@@ -66,7 +66,7 @@ export class AppsService extends TypeOrmQueryService<App> {
 
     await this.repo.save(app, { reload: true });
 
-    return AppDto.fromProject(app);
+    return AppDto.fromApp(app);
   }
 
   async delete(id: string) {
@@ -74,7 +74,7 @@ export class AppsService extends TypeOrmQueryService<App> {
     if (!app) throw new NotFoundException();
 
     await this.deleteOne(id);
-    return AppDto.fromProject(app);
+    return AppDto.fromApp(app);
   }
 
   private async checkExists(name: string, group?: string, id?: string) {

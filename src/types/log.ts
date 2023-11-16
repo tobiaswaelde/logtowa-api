@@ -4,7 +4,6 @@ import {
   IsObject,
   MaxLength,
   IsNumber,
-  IsDate,
   IsDateString,
 } from 'class-validator';
 import { Log } from '../models';
