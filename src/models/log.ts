@@ -2,13 +2,16 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { App } from './app';
 import { jsonTransformer } from '../util/db';
 
-@Entity('logs', { orderBy: {} })
+@Entity('logs', { orderBy: { timestamp: 'DESC', ns: 'DESC' } })
 export class Log {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
   timestamp: Date;
+
+  @Column('integer')
+  ns: number;
 
   @ManyToOne(() => App, (p) => p.logs)
   app: App;

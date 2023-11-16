@@ -66,7 +66,7 @@ export class ChartsService extends TypeOrmQueryService<Log> {
   private async getLogsSince(date: Date, appId?: string, levels?: string[]) {
     return this.repo.find({
       select: ['timestamp', 'level'],
-      order: { timestamp: 'asc' },
+      order: { timestamp: 'asc', ns: 'asc' },
       where: {
         timestamp: MoreThanOrEqual(date),
         app: appId ? Equal(appId) : undefined,

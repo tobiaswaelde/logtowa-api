@@ -39,6 +39,7 @@ export class LogsGateway {
     // save log in database
     const log = await this.logs.create(appKey, {
       timestamp: new Date(),
+      ns: process.hrtime()[1],
       ...rest,
     });
 
@@ -46,6 +47,7 @@ export class LogsGateway {
     this.server.emit(appKey, {
       id: log.id,
       timestamp: log.timestamp,
+      ns: log.ns,
       level: log.level,
       scope: log.scope,
       message: log.message,

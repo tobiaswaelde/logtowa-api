@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsOptional, IsObject, MaxLength, IsDate, IsDateString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsObject,
+  MaxLength,
+  IsNumber,
+  IsDate,
+  IsDateString,
+} from 'class-validator';
 import { Log } from '../models';
 
 export class LogMessage {
@@ -8,6 +16,10 @@ export class LogMessage {
   @IsOptional()
   @IsDateString()
   timestamp?: Date;
+
+  @IsOptional()
+  @IsNumber()
+  ns?: number;
 
   @IsNotEmpty()
   @MaxLength(255)
@@ -28,6 +40,7 @@ export class LogMessage {
 export class LogDto {
   id: string;
   timestamp: Date;
+  ns: number;
   level: string;
   scope?: string | null;
   message: any;
@@ -44,8 +57,11 @@ export class LogDto {
 
 export class CreateLogDto {
   @IsNotEmpty()
-  @IsDate()
   timestamp: Date;
+
+  @IsNotEmpty()
+  @IsNumber()
+  ns: number;
 
   @IsNotEmpty()
   level: string;
